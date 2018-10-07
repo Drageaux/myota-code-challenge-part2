@@ -20,6 +20,8 @@ public class TimeMachineFile extends File {
      */
     public int writeAt(byte[] data, int offset) throws IOException {
         int n = data.length;
+        // prevent offset + length > max file size to simplify return value
+        // otherwise, if offset was too high, we would need to manually count the actual length of bytes written
         if (n + offset > MAX_FILE_SIZE) {
             System.out.println("ERROR: Offset (" + offset + ") and length to write (" + n + ") is over the max file size allowed (32 bytes)");
             return -1;

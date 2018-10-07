@@ -1,3 +1,6 @@
+import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
+
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -94,6 +97,19 @@ public class Main {
                         case (2):
                             if (readWriteMode == "write") {
                                 // write by data and not just text
+                                String output = null;
+                                while (output == null || output.isEmpty()) {
+                                    System.out.print("Enter your content in regular text: ");
+                                    output = sc.nextLine();
+                                }
+                                byte[] bytes = output.getBytes();
+                                try {
+                                    int lengthDataWritten = currentFile.writeAt(bytes, 0);
+                                    System.out.println(lengthDataWritten + " bytes written");
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
                             } else {
                                 System.out.println("ERROR: You don't have write access");
                             }
