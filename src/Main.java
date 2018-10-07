@@ -7,6 +7,7 @@ public class Main {
 
         TimeMachineSystem tms = new TimeMachineSystem();
         TimeMachineFile currentFile = null;
+        String readWriteMode = "";
         boolean exit = false;
 
         System.out.println("Welcome to the Time Machine System!\n");
@@ -24,14 +25,25 @@ public class Main {
                         System.out.println("0. Exit program");
                     } else {
                         System.out.print("\nMAIN MENU");
-                        System.out.println(" (current file: " + currentFile.getName() + ")");
-
-                        System.out.println("1. Open file");
-                        System.out.println("2. Create file");
-                        System.out.println("3. Read file data at");
-                        System.out.println("4. Restore file version");
-                        System.out.println("5. Close file");
-                        System.out.println("0. Exit program");
+                        System.out.print(" (current file: \"" + currentFile.getName() + "\"");
+                        if (readWriteMode == "read") {
+                            System.out.println(", read-only mode)");
+                            System.out.println("1. Open file");
+                            System.out.println("3. Read file data at");
+                            System.out.println("4. Restore file version");
+                            System.out.println("5. Close file");
+                            System.out.println("0. Exit program");
+                        } else if (readWriteMode == "write") {
+                            System.out.println(", writable mode)");
+                            System.out.println("1. Open file");
+                            System.out.println("2. Create file");
+                            System.out.println("3. Read file data at");
+                            System.out.println("4. Restore file version");
+                            System.out.println("5. Close file");
+                            System.out.println("0. Exit program");
+                        } else {
+                            System.out.println(")");
+                        }
                     }
                     System.out.print("Enter your command: ");
                     choice = Integer.parseInt(sc.nextLine()); // already throws
@@ -50,27 +62,48 @@ public class Main {
                             break;
                         case (1):
                             String readFile = null;
-                            while (readFile == null || readFile..isEmpty()) {
+                            while (readFile == null || readFile.isEmpty()) {
                                 System.out.print("Enter file name: ");
                                 readFile = sc.nextLine();
-                                System.out.println("Invalid input (please enter a file name)");
+                                if (readFile == null || readFile.isEmpty()) {
+                                    System.out.println("Invalid input (please enter a file name)");
+                                }
                             }
-                            currentFile = tms.open(readFile, "read");
+                            int mode = -1;
+                            while (mode < 0 || mode > 2) {
+                                System.out.print("Read or write mode? (1.read  2.write  0.cancel)");
+                                try {
+                                    mode = Integer.parseInt(sc.nextLine());
+                                } catch (NumberFormatException e) {
+                                    System.out.println("Invalid input");
+                                }
+
+                            }
+                            if (mode == 0) break;
+                            else if (mode == 1) readWriteMode = "read";
+                            else if (mode == 2) readWriteMode = "write";
+
+                            currentFile = tms.open(readFile, readWriteMode);
                             break;
                     }
-                } else {
+                } else { // if system is currently reading a file
                     switch (choice) {
 
                         case (2):
+                            if (readWriteMode == "write"){
 
+                            }
                             break;
                         case (3):
+//                            currentFile.readDataBufferAt
+
                             break;
                         case (4):
                             break;
                         case (5):
                             currentFile.close();
                             currentFile = null;
+                            readWriteMode = "";
                             break;
                     }
                 }
