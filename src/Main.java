@@ -28,14 +28,12 @@ public class Main {
                         System.out.print(" (current file: \"" + currentFile.getName() + "\"");
                         if (readWriteMode == "read") {
                             System.out.println(", read-only mode)");
-                            System.out.println("1. Open file");
                             System.out.println("3. Read file data at");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
                         } else if (readWriteMode == "write") {
                             System.out.println(", writable mode)");
-                            System.out.println("1. Open file");
                             System.out.println("2. Create file");
                             System.out.println("3. Read file data at");
                             System.out.println("4. Restore file version");
@@ -90,6 +88,9 @@ public class Main {
                     switch (choice) {
                         default:
                             break;
+                        case (1):
+                            System.out.println("ERROR: File already opened. Close file first to open another one");
+                            break;
                         case (2):
                             if (readWriteMode == "write") {
                                 // write by data and not just text
@@ -99,9 +100,10 @@ public class Main {
                             break;
                         case (3):
                             try {
+                                System.out.println(currentFile.length());
                                 byte[] bytes = currentFile.readAt(0, 0);
                                 for (byte b : bytes) {
-                                    System.out.print(b + " ");
+                                    System.out.printf("%02x ", b);
                                 }
                                 System.out.println("");
                             } catch (IOException e) {

@@ -13,7 +13,8 @@ public class TimeMachineFile extends File {
     public byte[] readAt(int offset, int n) throws IOException {
         try {
             this.fis = new FileInputStream(this);
-            byte[] data = Files.readAllBytes(this.toPath());
+            byte[] data = new byte[32];
+            data = Files.readAllBytes(this.toPath());
             return data;
         } catch (IOException e) {
             e.printStackTrace();
