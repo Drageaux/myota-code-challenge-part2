@@ -100,8 +100,8 @@ public class Main {
                             break;
                         case (3):
                             try {
-                                System.out.println(currentFile.length());
-                                byte[] bytes = currentFile.readAt(0, 0);
+                                byte[] bytes = currentFile.readAt(0, 32);
+                                if (bytes == null) break;
                                 for (byte b : bytes) {
                                     System.out.printf("%02x ", b);
                                 }

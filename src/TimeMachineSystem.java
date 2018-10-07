@@ -41,9 +41,4 @@ public class TimeMachineSystem {
         return result;
     }
 
-
-    public byte[] readDataAt(int offset, int n) {
-
-        return null;
-    }
 }
