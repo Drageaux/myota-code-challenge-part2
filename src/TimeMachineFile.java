@@ -10,18 +10,16 @@ public class TimeMachineFile extends File {
     }
 
 
-    public byte[] readDataBufferAt(int offset, int n) throws IOException {
+    public byte[] readAt(int offset, int n) throws IOException {
         try {
             this.fis = new FileInputStream(this);
             byte[] data = Files.readAllBytes(this.toPath());
-            System.out.println(data);
             return data;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             fis.close();
         }
-
         return null;
     }
 

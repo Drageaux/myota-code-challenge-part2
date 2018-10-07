@@ -5,7 +5,11 @@ import java.nio.file.Paths;
 
 public class TimeMachineSystem {
 
+    private TimeMachineFile exampleFile;
+
+
     public TimeMachineSystem() {
+        this.exampleFile = this.open("test", "write");
     }
 
     public TimeMachineFile open(String name, String mode) {
@@ -13,7 +17,7 @@ public class TimeMachineSystem {
 
         file = new TimeMachineFile("./file/" + name);
 
-        if (mode == "read") {
+        if (mode == "read" && file.exists()) {
             try {
                 System.out.println(this.readFile(file));
             } catch (IOException e) {

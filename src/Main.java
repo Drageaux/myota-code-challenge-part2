@@ -1,4 +1,4 @@
-import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -71,7 +71,7 @@ public class Main {
                             }
                             int mode = -1;
                             while (mode < 0 || mode > 2) {
-                                System.out.print("Read or write mode? (1.read  2.write  0.cancel)");
+                                System.out.print("Read or write mode? (1.read  2.write  0.cancel): ");
                                 try {
                                     mode = Integer.parseInt(sc.nextLine());
                                 } catch (NumberFormatException e) {
@@ -88,15 +88,25 @@ public class Main {
                     }
                 } else { // if system is currently reading a file
                     switch (choice) {
-
+                        default:
+                            break;
                         case (2):
-                            if (readWriteMode == "write"){
-
+                            if (readWriteMode == "write") {
+                                // write by data and not just text
+                            } else {
+                                System.out.println("ERROR: You don't have write access");
                             }
                             break;
                         case (3):
-//                            currentFile.readDataBufferAt
-
+                            try {
+                                byte[] bytes = currentFile.readAt(0, 0);
+                                for (byte b : bytes) {
+                                    System.out.print(b + " ");
+                                }
+                                System.out.println("");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case (4):
                             break;
