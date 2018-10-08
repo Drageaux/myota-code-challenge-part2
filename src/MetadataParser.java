@@ -102,7 +102,6 @@ public class MetadataParser {
         }
 
         ArrayList<Chunk> chunks = new ArrayList<>();
-        byte[] results = new byte[32];
         Integer verInt = 0;
         if (version == "CURR") {
             chunks = metadata.versionChunksPair.get(currVer);
@@ -117,13 +116,19 @@ public class MetadataParser {
 
         // write to file
         int offset = 0;
+        byte[] output = new byte[32];
+        for (Chunk c : chunks) {
+            for (byte b : c.content) {
+                output[offset] = b;
+                offset++;
+            }
+        }
+
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream("./file/" + fileName + verInt);
-            for (Chunk c : chunks) {
-                fos.write(c.content, offset, c.content.length);
-                offset += c.content.length;
-            }
+            fos.write(output);
+            System.out.println("Output: " + new String(output));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -148,7 +153,6 @@ public class MetadataParser {
         HashMap<Integer, ArrayList<Chunk>> metaMap = new HashMap<>();
 
         String metadata = readMetadataFile(new TimeMachineFile("./meta/" + fileName));
-        System.out.println(metadata);
 
         if (metadata != null && !metadata.isEmpty()) {
             // versions are new-line separated; can store up to 3 lines only

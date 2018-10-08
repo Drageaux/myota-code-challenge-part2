@@ -115,6 +115,12 @@ public class TimeMachineFile extends File {
     }
 
 
+    public void restoreFromVersion(String version) {
+        MetadataParser metadataParser = new MetadataParser();
+        metadataParser.restoreFromVersion(this.getName(), version);
+    }
+
+
     /**
      * Close all streams.
      */

@@ -134,6 +134,29 @@ public class Main {
                             System.out.println("");
                             break;
                         case (4):
+                            int version = -1;
+                            while (version < 0 || version > 3) {
+                                System.out.println("1. Keep current version");
+                                System.out.println("2. Restore last version");
+                                System.out.println("3. Restore oldest version");
+                                version = Integer.parseInt(sc.nextLine());
+                            }
+                            if (version == 0) {
+                                break;
+                            }
+                            switch (version) {
+                                default:
+                                    break;
+                                case (1):
+                                    currentFile.restoreFromVersion("CURR");
+                                    break;
+                                case (2):
+                                    currentFile.restoreFromVersion("LAST");
+                                    break;
+                                case (3):
+                                    currentFile.restoreFromVersion("OLDEST");
+                                    break;
+                            }
                             break;
                         case (5):
                             currentFile.close();
