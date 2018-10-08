@@ -105,8 +105,11 @@ public class Main {
                                 byte[] bytes = output.getBytes();
                                 try {
                                     int lengthDataWritten = currentFile.writeAt(bytes, 0);
-                                    tms.storeChunks(bytes);
-                                    System.out.println(lengthDataWritten + " bytes written");
+                                    // only store chunks if write process successful
+                                    if (lengthDataWritten != -1) {
+                                        tms.storeChunks(bytes);
+                                        System.out.println(lengthDataWritten + " bytes written");
+                                    }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }

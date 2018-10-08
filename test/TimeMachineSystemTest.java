@@ -5,10 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class TimeMachineSystemTest {
 
@@ -17,12 +14,16 @@ public class TimeMachineSystemTest {
         assertEquals(2, 1 + 1);
     }
 
+
+    private final static Byte BOUNDARY_BYTE = new Byte("48");
+    private final static Byte EOF_BYTE = new Byte("0");
+
     @Test
     void testStoreChunks() {
         TimeMachineFile file = null;
         file = new TimeMachineFile("./file/" + "test");
 
-        HashSet<Chunk> set = new HashSet<Chunk>();
+        HashMap<String, Chunk> map = new HashMap<>();
 
         byte[] data = new byte[32];
         FileInputStream fis = null;
@@ -39,21 +40,26 @@ public class TimeMachineSystemTest {
 
 
         ArrayList<Byte> currBytes = new ArrayList<>();
-        int currSize = 0;
         // read up until boundary 0x30, or 48 decimal, or '0' ASCII
-
         for (byte b : data) {
-            // found border
-            if (new Byte("48").byteValue() == b) {
+            if (b == BOUNDARY_BYTE.byteValue()) { // found border
                 if (currBytes.size() == 0) { // if empty, add to currBytes
                     System.out.println("is empty");
                 } else { // else, finish chunk and add to currBytes
+                    Chunk newChunk = new Chunk(currBytes);
+                    map.put(new String(String.valueOf(currBytes)), newChunk);
 
-                    Chunk newChunk = new Chunk(this.byteListToByteArray(currBytes));
-                    System.out.println("new chunk: " + newChunk);
                     currBytes.clear();
                 }
+            } else if (b == EOF_BYTE.byteValue()) { // found end of file
+                Chunk newChunk = new Chunk(currBytes);
+                map.put(new String(String.valueOf(currBytes)), newChunk);
+
+                currBytes.clear();
+                System.out.println("End of file");
+                break;
             }
+
             if (currBytes.size() <= 32) {
                 currBytes.add(b);
             }
@@ -61,10 +67,4 @@ public class TimeMachineSystemTest {
         System.out.println(currBytes);
     }
 
-
-    byte[] byteListToByteArray(List<Byte> list) {
-        byte[] byteArray = new byte[list.size()];
-        for (int i = 0; i < list.size(); i++) byteArray[i] = list.get(i);
-        return byteArray;
-    }
 }
