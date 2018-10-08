@@ -119,16 +119,12 @@ public class Main {
                             }
                             break;
                         case (3):
-                            try {
-                                byte[] bytes = currentFile.readAt(0, 32);
-                                if (bytes == null) break;
-                                for (byte b : bytes) {
-                                    System.out.printf("%02x ", b);
-                                }
-                                System.out.println("");
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                            byte[] bytes = currentFile.readAt(0, 32);
+                            if (bytes == null) break;
+                            for (byte b : bytes) {
+                                System.out.printf("%02x ", b);
                             }
+                            System.out.println("");
                             break;
                         case (4):
                             break;
@@ -141,8 +137,8 @@ public class Main {
                 }
             }
 
-            System.out.print("Press Enter/Return to continue...");
-            String input = sc.nextLine();
+//            System.out.print("Press Enter/Return to continue...");
+//            String input = sc.nextLine();
             System.out.println("===================================================\n");
         }
     }

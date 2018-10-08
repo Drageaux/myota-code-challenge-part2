@@ -29,7 +29,7 @@ public class TimeMachineSystem {
     public TimeMachineFile open(String name, String mode) {
         TimeMachineFile file = null;
 
-        file = new TimeMachineFile("./file" + name);
+        file = new TimeMachineFile("./file/" + name);
 
         if (mode == "read" && file.exists()) {
             try {
@@ -42,7 +42,7 @@ public class TimeMachineSystem {
         return file;
     }
 
-    
+
     public boolean storeChunks(byte[] userInputBytes) {
         HashMap<String, Chunk> newChunksMap = this.chunkParser.createChunks(userInputBytes);
 

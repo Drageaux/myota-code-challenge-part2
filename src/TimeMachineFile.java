@@ -14,6 +14,8 @@ public class TimeMachineFile extends File {
 
 
     /**
+     * Write to this file.
+     *
      * @param data
      * @param offset
      * @return
@@ -43,19 +45,26 @@ public class TimeMachineFile extends File {
 
 
     /**
+     * Return a byte array read from this file.
+     *
      * @param offset
      * @param n
      * @return
      * @throws IOException
      */
-    public byte[] readAt(int offset, int n) throws IOException {
+    public byte[] readAt(int offset, int n) {
         if (offset + n > MAX_FILE_SIZE) {
             System.out.println("ERROR: Offset (" + offset + ") and length to read (" + n + ") is over the max file size allowed (32 bytes)");
             return null;
         }
 
         try {
-            this.fis = new FileInputStream(this);
+            try {
+                this.fis = new FileInputStream(this);
+            } catch (FileNotFoundException e) {
+                throw e;
+            }
+
             byte[] data = new byte[32];
             // read into the byte array
             this.fis.read(data, offset, n);
@@ -64,13 +73,19 @@ public class TimeMachineFile extends File {
             e.printStackTrace();
             return null;
         } finally {
-            fis.close();
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
 
     /**
-     *
+     * Close all streams
      */
     public void close() {
         try {

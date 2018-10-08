@@ -72,11 +72,11 @@ public class ChunkParser {
             }
         }
         if (currBytes.size() != 0) { // read and store the rest until end of array
-            System.out.println("End of file");
+//            System.out.println("End of file");
             this.makeNewChunk(currBytes, map);
             currBytes.clear();
         }
-        System.out.println("Current bytes: " + currBytes);
+        System.out.println("Read all bytes!");
 
         return map;
     }
@@ -96,7 +96,6 @@ public class ChunkParser {
             try {
                 File chunkFile = new File(c.path);
                 fos = new FileOutputStream(chunkFile);
-                System.out.println(c.content);
                 fos.write(c.content);
             } catch (IOException e) {
                 e.printStackTrace();
