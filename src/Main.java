@@ -1,6 +1,3 @@
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
-
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -31,7 +28,7 @@ public class Main {
                         System.out.print(" (current file: \"" + currentFile.getName() + "\"");
                         if (readWriteMode == "read") {
                             System.out.println(", read-only mode)");
-                            System.out.println("3. Read all file data (offset 0, length 32");
+                            System.out.println("3. Read all file data (offset 0, length 32)");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
