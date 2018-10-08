@@ -121,8 +121,15 @@ public class Main {
                         case (3):
                             byte[] bytes = currentFile.readAt(0, 32);
                             if (bytes == null) break;
+                            System.out.print("In hex: ");
                             for (byte b : bytes) {
                                 System.out.printf("%02x ", b);
+                            }
+                            System.out.println("");
+
+                            System.out.print("In ASCII: ");
+                            for (byte b : bytes) {
+                                System.out.print(b + " ");
                             }
                             System.out.println("");
                             break;
