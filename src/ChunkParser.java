@@ -32,8 +32,15 @@ public class ChunkParser {
     }
 
 
+    /********
+     * MAIN *
+     ********/
+
     /**
-     * MAIN
+     * Read from /chunk folder and pre-populate a HashMap all existing chunks.
+     *
+     * @return HashMap
+     * @throws IOException
      */
     public HashMap<String, Chunk> retrieveExistingChunks() throws IOException {
         HashMap<String, Chunk> existingChunks = new HashMap<>();
@@ -55,6 +62,12 @@ public class ChunkParser {
     }
 
 
+    /**
+     * Parse a byte array and populate a HashMap with new Chunks only.
+     *
+     * @param data - an array of bytes, likely from a plain text file
+     * @return
+     */
     public HashMap<String, Chunk> createChunks(byte[] data) {
         HashMap<String, Chunk> map = new HashMap<>();
 
@@ -81,6 +94,13 @@ public class ChunkParser {
         return map;
     }
 
+
+    /**
+     * Add bytes to new map if bytes pattern is not already stored in a Chunk.
+     *
+     * @param bytes  - bytes to add
+     * @param newMap - map to add if bytes pattern is not already stored in existingMap
+     */
     private void makeNewChunk(ArrayList<Byte> bytes, Map<String, Chunk> newMap) {
         byte[] byteArr = this.byteListToByteArray(bytes);
         if (!this.existingChunks.containsKey(new String(byteArr))) {
@@ -89,6 +109,14 @@ public class ChunkParser {
         }
     }
 
+    /**
+     * For each Chunk in the Collection, write a chunk file into the /chunk folder
+     * NOTE: not checking duplicates
+     * TODO: retrieve existingChunks and check against duplicates
+     *
+     * @param chunks
+     * @throws IOException
+     */
     public void writeChunks(Collection<Chunk> chunks) throws IOException {
         FileOutputStream fos = null;
 

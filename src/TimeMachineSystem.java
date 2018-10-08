@@ -26,12 +26,19 @@ public class TimeMachineSystem {
     }
 
 
+    /**
+     * Return a file. Print file if file exists.
+     *
+     * @param name
+     * @param mode
+     * @return
+     */
     public TimeMachineFile open(String name, String mode) {
         TimeMachineFile file = null;
 
         file = new TimeMachineFile("./file/" + name);
 
-        if (mode == "read" && file.exists()) {
+        if (file.exists()) {
             try {
                 System.out.println(Helper.readFile(file));
             } catch (IOException e) {
