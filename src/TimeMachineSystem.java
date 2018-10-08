@@ -2,20 +2,16 @@ import java.io.*;
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class TimeMachineSystem {
 
     private final static Byte BOUNDARY_BYTE = new Byte("48");
     private final static int MAX_FILE_SIZE = 32;
 
-    private TimeMachineFile exampleFile;
+    private HashMap<String, Chunk> existingChunks = new HashMap<>();
 
     public TimeMachineSystem() {
-        this.exampleFile = this.open("test", "write");
     }
 
     public TimeMachineFile open(String name, String mode) {
@@ -48,7 +44,13 @@ public class TimeMachineSystem {
     }
 
 
-    public boolean storeChunks(byte[] data) {
+    public boolean storeChunks(byte[] bytes) {
+        HashMap<String, Chunk> newChunks = this.createChunks(bytes);
+        return false;
+    }
+
+
+    private HashMap<String, Chunk> createChunks(byte[] data) {
         HashMap<String, Chunk> map = new HashMap<>();
 
         ArrayList<Byte> currBytes = new ArrayList<>();
@@ -56,8 +58,7 @@ public class TimeMachineSystem {
         for (byte b : data) {
             if (b == this.BOUNDARY_BYTE.byteValue()) { // found border
                 if (currBytes.size() != 0) { // finish chunk and add to currBytes
-                    Chunk newChunk = new Chunk(currBytes);
-                    map.put(new String(String.valueOf(currBytes)), newChunk);
+                    this.storeNewChunk(currBytes, map);
                     currBytes.clear();
                 }
             }
@@ -67,13 +68,18 @@ public class TimeMachineSystem {
         }
         if (currBytes.size() != 0) { // read and store the rest until end of array
             System.out.println("End of file");
-            Chunk newChunk = new Chunk(currBytes);
-            map.put(new String(String.valueOf(currBytes)), newChunk);
+            this.storeNewChunk(currBytes, map);
             currBytes.clear();
         }
-
         System.out.println("Current bytes: " + currBytes);
 
-        return false;
+        return map;
+    }
+
+    private void storeNewChunk(ArrayList<Byte> bytes, Map<String, Chunk> newMap) {
+        if (!this.existingChunks.containsKey(bytes)) {
+            Chunk newChunk = new Chunk(bytes);
+            newMap.put(new String(String.valueOf(bytes)), newChunk);
+        }
     }
 }

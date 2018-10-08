@@ -19,7 +19,7 @@ public class TimeMachineSystemTest {
     private final static Byte EOF_BYTE = new Byte("0");
 
     @Test
-    void testStoreChunks() {
+    void testCreateChunks() {
         TimeMachineFile file = null;
         file = new TimeMachineFile("./file/" + "test");
 
@@ -42,29 +42,24 @@ public class TimeMachineSystemTest {
         ArrayList<Byte> currBytes = new ArrayList<>();
         // read up until boundary 0x30, or 48 decimal, or '0' ASCII
         for (byte b : data) {
-            if (b == BOUNDARY_BYTE.byteValue()) { // found border
-                if (currBytes.size() == 0) { // if empty, add to currBytes
-                    System.out.println("is empty");
-                } else { // else, finish chunk and add to currBytes
+            if (b == this.BOUNDARY_BYTE.byteValue()) { // found border
+                if (currBytes.size() != 0) { // finish chunk and add to currBytes
                     Chunk newChunk = new Chunk(currBytes);
                     map.put(new String(String.valueOf(currBytes)), newChunk);
-
                     currBytes.clear();
                 }
-            } else if (b == EOF_BYTE.byteValue()) { // found end of file
-                Chunk newChunk = new Chunk(currBytes);
-                map.put(new String(String.valueOf(currBytes)), newChunk);
-
-                currBytes.clear();
-                System.out.println("End of file");
-                break;
             }
-
-            if (currBytes.size() <= 32) {
+            if (currBytes.size() < 32) {
                 currBytes.add(b);
             }
         }
-        System.out.println(currBytes);
+        if (currBytes.size() != 0) { // read and store the rest until end of array
+            System.out.println("End of file");
+            Chunk newChunk = new Chunk(currBytes);
+            map.put(new String(String.valueOf(currBytes)), newChunk);
+            currBytes.clear();
+        }
+        System.out.println("Current bytes: " + currBytes);
     }
 
 }
