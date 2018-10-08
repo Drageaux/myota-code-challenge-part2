@@ -31,14 +31,14 @@ public class Main {
                         System.out.print(" (current file: \"" + currentFile.getName() + "\"");
                         if (readWriteMode == "read") {
                             System.out.println(", read-only mode)");
-                            System.out.println("3. Read file data at");
+                            System.out.println("3. Read all file data (offset 0, length 32");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
                         } else if (readWriteMode == "write") {
                             System.out.println(", writable mode)");
                             System.out.println("2. Write file");
-                            System.out.println("3. Read file data at");
+                            System.out.println("3. Read all file data (offset 0, length 32");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
@@ -119,6 +119,7 @@ public class Main {
                             }
                             break;
                         case (3):
+
                             byte[] bytes = currentFile.readAt(0, 32);
                             if (bytes == null) break;
                             System.out.print("In hex: ");
