@@ -37,7 +37,7 @@ public class Main {
                             System.out.println("0. Exit program");
                         } else if (readWriteMode == "write") {
                             System.out.println(", writable mode)");
-                            System.out.println("2. Create file");
+                            System.out.println("2. Write file");
                             System.out.println("3. Read file data at");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
@@ -105,7 +105,11 @@ public class Main {
                                 byte[] bytes = output.getBytes();
                                 try {
                                     int lengthDataWritten = currentFile.writeAt(bytes, 0);
-                                    System.out.println(lengthDataWritten + " bytes written");
+                                    // only store chunks if write process successful
+                                    if (lengthDataWritten != -1) {
+                                        tms.storeChunks(bytes);
+                                        System.out.println(lengthDataWritten + " bytes written");
+                                    }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
