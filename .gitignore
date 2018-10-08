@@ -43,3 +43,6 @@ $RECYCLE.BIN/
 
 # Misc.
 .idea/
+file/
+meta/
+chunk/
