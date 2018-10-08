@@ -56,7 +56,6 @@ public class MetadataParser {
 
     private String compileNewVersionMetadata(String fileName) {
         Metadata metadata = this.createMetadataObject(fileName);
-        HashMap<Integer, ArrayList<Chunk>> newMetaMapping = new HashMap<>();
 
         Iterator<Integer> iterator = metadata.versionChunksPair.keySet().iterator();
         Integer currVer = null;
@@ -84,9 +83,62 @@ public class MetadataParser {
     }
 
 
-    public void restoreFromVersion(String fileName, Integer currentVersion, String version) {
+    public void restoreFromVersion(String fileName, String version) {
         // CURR, LAST, OLDEST
         // get version, version minus 1 or 2, exit if key/value doesn't exist
+        Metadata metadata = this.createMetadataObject(fileName);
+
+        Iterator<Integer> iterator = metadata.versionChunksPair.keySet().iterator();
+        Integer currVer = null;
+        Integer lastVer = null;
+        Integer oldestVer = null;
+        // find oldest version
+        oldestVer = iterator.next();
+        if (iterator.hasNext()) {
+            lastVer = iterator.next();
+        }
+        if (iterator.hasNext()) {
+            currVer = iterator.next();
+        }
+
+        ArrayList<Chunk> chunks = new ArrayList<>();
+        byte[] results = new byte[32];
+        Integer verInt = 0;
+        if (version == "CURR") {
+            chunks = metadata.versionChunksPair.get(currVer);
+            verInt = currVer;
+        } else if (version == "LAST") {
+            chunks = metadata.versionChunksPair.get(lastVer);
+            verInt = lastVer;
+        } else if (version == "OLDEST") {
+            chunks = metadata.versionChunksPair.get(oldestVer);
+            verInt = oldestVer;
+        }
+
+        // write to file
+        int offset = 0;
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream("./file/" + fileName + verInt);
+            for (Chunk c : chunks) {
+                fos.write(c.content, offset, c.content.length);
+                offset += c.content.length;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // write to new file with version appended in name
     }
 
 
