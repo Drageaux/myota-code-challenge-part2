@@ -1,5 +1,7 @@
 import java.io.*;
 import java.nio.file.Files;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class TimeMachineFile extends File {
 
@@ -80,6 +82,25 @@ public class TimeMachineFile extends File {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+
+    /**
+     * Command to store Chunks from user's input
+     *
+     * @param userInputBytes
+     * @return
+     */
+    public void flush(byte[] userInputBytes) {
+        ChunkParser chunkParser = new ChunkParser();
+        HashMap<String, Chunk> newChunksMap = chunkParser.createChunks(userInputBytes);
+
+        Collection<Chunk> newChunks = newChunksMap.values();
+        try {
+            chunkParser.writeChunks(newChunks);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

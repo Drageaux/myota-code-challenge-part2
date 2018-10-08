@@ -10,18 +10,14 @@ public class TimeMachineSystem {
     private final static Byte BOUNDARY_BYTE = new Byte("48");
     private final static int MAX_FILE_SIZE = 32;
 
-    private ChunkParser chunkParser;
     public MetadataParser metadataParser;
 
     /**
      * Constructor with dependency injection to add helper methods to Time Machine
      *
-     * @param chunkParser
      * @param metadataParser
      */
-    public TimeMachineSystem(ChunkParser chunkParser,
-                             MetadataParser metadataParser) {
-        this.chunkParser = chunkParser;
+    public TimeMachineSystem(MetadataParser metadataParser) {
         this.metadataParser = metadataParser;
     }
 
@@ -33,7 +29,7 @@ public class TimeMachineSystem {
      * @param mode
      * @return
      */
-    public TimeMachineFile open(String name, String mode) {
+    public static TimeMachineFile open(String name, String mode) {
         TimeMachineFile file = null;
 
         file = new TimeMachineFile("./file/" + name);
@@ -49,16 +45,4 @@ public class TimeMachineSystem {
         return file;
     }
 
-
-    public boolean storeChunks(byte[] userInputBytes) {
-        HashMap<String, Chunk> newChunksMap = this.chunkParser.createChunks(userInputBytes);
-
-        Collection<Chunk> newChunks = newChunksMap.values();
-        try {
-            this.chunkParser.writeChunks(newChunks);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 }
