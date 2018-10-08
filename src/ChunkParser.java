@@ -34,6 +34,11 @@ public class ChunkParser {
         return byteArray;
     }
 
+    public static ArrayList<Chunk> makeChunksFromText(String text){
+
+        return null;
+    }
+
 
     /********
      * MAIN *

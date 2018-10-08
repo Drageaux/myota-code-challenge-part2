@@ -12,8 +12,7 @@ public class MetadataParserTest {
     void createMetadataObjectTest() {
 
         HashMap<Integer, ArrayList<Chunk>> metaMap = new HashMap<>();
-
-
+        
         String metadata = readMetadataFile(new TimeMachineFile("./meta/" + "test"));
         System.out.println(metadata);
 
@@ -21,7 +20,6 @@ public class MetadataParserTest {
             // versions are new-line separated; can store up to 3 lines only
             String sanitzedMeta = metadata.replace("\r\n", "\n"); // new line is \r\n for some reason
             String[] versionsStrArr = sanitzedMeta.split("\n");
-            System.out.println(versionsStrArr);
 
             for (String version : versionsStrArr) {
                 // file version vs metadata are separated by a space
@@ -41,6 +39,9 @@ public class MetadataParserTest {
                 metaMap.put(verInt, chunksArr);
             }
         }
+
+        Metadata metadataObj = new Metadata(metaMap);
+        System.out.println(metadataObj);
     }
 
     private Chunk getChunkFromId(String id) {

@@ -13,6 +13,7 @@ public class TimeMachineFile extends File {
 
     /**
      * Constructor for File related to Time Machine System.
+     * FIXME: should only be whatever is in the /file folder
      *
      * @param pathname
      */
