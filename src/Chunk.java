@@ -6,21 +6,16 @@ public class Chunk {
     byte[] content;
     String path;
 
-    public Chunk(byte[] content) {
-        this.uid = UUID.randomUUID().toString();
+
+    public Chunk(String filename, byte[] content) {
+        this.uid = filename;
         this.content = content;
         this.path = "./chunk/" + this.uid;
     }
 
-    public Chunk(List<Byte> content) {
+    public Chunk(byte[] content) {
         this.uid = UUID.randomUUID().toString();
-        this.content = this.byteListToByteArray(content);
-        this.path = "./chunk/" + this.uid;
-    }
-
-    public Chunk(Byte[] content) {
-        this.uid = UUID.randomUUID().toString();
-        this.content = this.byteClassListToPrimitiveByteArray(content);
+        this.content = content;
         this.path = "./chunk/" + this.uid;
     }
 
@@ -28,17 +23,5 @@ public class Chunk {
     @Override
     public String toString() {
         return new String(this.content);
-    }
-
-    private byte[] byteListToByteArray(List<Byte> list) {
-        byte[] byteArray = new byte[list.size()];
-        for (int i = 0; i < list.size(); i++) byteArray[i] = list.get(i);
-        return byteArray;
-    }
-
-    private byte[] byteClassListToPrimitiveByteArray(Byte[] list) {
-        byte[] byteArray = new byte[list.length];
-        for (int i = 0; i < list.length; i++) byteArray[i] = list[i];
-        return byteArray;
     }
 }

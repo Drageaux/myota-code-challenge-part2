@@ -44,7 +44,7 @@ public class TimeMachineSystemTest {
         for (byte b : data) {
             if (b == this.BOUNDARY_BYTE.byteValue()) { // found border
                 if (currBytes.size() != 0) { // finish chunk and add to currBytes
-                    Chunk newChunk = new Chunk(currBytes);
+                    Chunk newChunk = new Chunk(ChunkParser.byteListToByteArray(currBytes));
                     map.put(new String(String.valueOf(currBytes)), newChunk);
                     currBytes.clear();
                 }
@@ -55,7 +55,7 @@ public class TimeMachineSystemTest {
         }
         if (currBytes.size() != 0) { // read and store the rest until end of array
             System.out.println("End of file");
-            Chunk newChunk = new Chunk(currBytes);
+            Chunk newChunk = new Chunk(ChunkParser.byteListToByteArray(currBytes));
             map.put(new String(String.valueOf(currBytes)), newChunk);
             currBytes.clear();
         }

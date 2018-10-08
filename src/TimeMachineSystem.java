@@ -1,5 +1,6 @@
 import java.io.*;
 import java.nio.file.FileSystem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -9,15 +10,34 @@ public class TimeMachineSystem {
     private final static Byte BOUNDARY_BYTE = new Byte("48");
     private final static int MAX_FILE_SIZE = 32;
 
-    private HashMap<String, Chunk> existingChunks = new HashMap<>();
+    private ChunkParser chunkParser;
+    public MetadataParser metadataParser;
+    public HashMap<String, Chunk> existingChunks;
 
-    public TimeMachineSystem() {
+    /**
+     * Constructor with dependency injection to add helper methods to Time Machine
+     *
+     * @param chunkParser
+     * @param metadataParser
+     */
+    public TimeMachineSystem(ChunkParser chunkParser,
+                             MetadataParser metadataParser) {
+        this.chunkParser = chunkParser;
+        this.metadataParser = metadataParser;
+
+        // retrieve existing chunks to prevent saving of duplicate chunks
+        try {
+            this.existingChunks = this.retrieveExistingChunks();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     public TimeMachineFile open(String name, String mode) {
         TimeMachineFile file = null;
 
-        file = new TimeMachineFile(name);
+        file = new TimeMachineFile("./file" + name);
 
         if (mode == "read" && file.exists()) {
             try {
@@ -44,8 +64,8 @@ public class TimeMachineSystem {
     }
 
 
-    public boolean storeChunks(byte[] bytes) {
-        HashMap<String, Chunk> newChunksMap = this.createChunks(bytes);
+    public boolean storeChunks(byte[] userInputBytes) {
+        HashMap<String, Chunk> newChunksMap = this.createChunks(userInputBytes);
 
         Collection<Chunk> newChunks = newChunksMap.values();
         try {
@@ -54,6 +74,26 @@ public class TimeMachineSystem {
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    private HashMap<String, Chunk> retrieveExistingChunks() throws IOException {
+        HashMap<String, Chunk> existingChunks = new HashMap<>();
+        File folder = new File("./chunk");
+        File[] listOfFiles = folder.listFiles();
+
+        for (File f : listOfFiles) {
+            if (f.isFile()) {
+                TimeMachineFile tmFile = new TimeMachineFile(f.getAbsolutePath());
+                String chunkString = this.readFile(tmFile);
+                if (chunkString != null && !chunkString.isEmpty()) {
+                    Chunk chunk = new Chunk(f.getName(), chunkString.getBytes());
+                    existingChunks.put(chunkString, chunk);
+                }
+            }
+        }
+
+        return existingChunks;
     }
 
 
@@ -83,11 +123,11 @@ public class TimeMachineSystem {
         return map;
     }
 
-
     private void makeNewChunk(ArrayList<Byte> bytes, Map<String, Chunk> newMap) {
-        if (!this.existingChunks.containsKey(bytes)) {
-            Chunk newChunk = new Chunk(bytes);
-            newMap.put(new String(String.valueOf(bytes)), newChunk);
+        byte[] byteArr = this.chunkParser.byteListToByteArray(bytes);
+        if (!this.existingChunks.containsKey(new String(byteArr))) {
+            Chunk newChunk = new Chunk(byteArr);
+            newMap.put(new String(byteArr), newChunk);
         }
     }
 
