@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TimeMachineSystem tms = new TimeMachineSystem(new ChunkParser(), new MetadataParser());
+        TimeMachineSystem tms = new TimeMachineSystem(new MetadataParser());
         TimeMachineFile currentFile = null;
         String readWriteMode = "";
         boolean exit = false;
@@ -31,14 +31,14 @@ public class Main {
                         System.out.print(" (current file: \"" + currentFile.getName() + "\"");
                         if (readWriteMode == "read") {
                             System.out.println(", read-only mode)");
-                            System.out.println("3. Read file data at");
+                            System.out.println("3. Read all file data (offset 0, length 32");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
                         } else if (readWriteMode == "write") {
                             System.out.println(", writable mode)");
-                            System.out.println("2. Write file");
-                            System.out.println("3. Read file data at");
+                            System.out.println("2. Write file (flush chunks and metadata if written successful)");
+                            System.out.println("3. Read all file data (offset 0, length 32");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
                             System.out.println("0. Exit program");
@@ -105,32 +105,58 @@ public class Main {
                                 byte[] bytes = output.getBytes();
                                 try {
                                     int lengthDataWritten = currentFile.writeAt(bytes, 0);
-                                    // only store chunks if write process successful
+                                    // only store chunks and generate metadata if write process successful
                                     if (lengthDataWritten != -1) {
-                                        tms.storeChunks(bytes);
+                                        currentFile.flush(bytes);
                                         System.out.println(lengthDataWritten + " bytes written");
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-
                             } else {
                                 System.out.println("ERROR: You don't have write access");
                             }
                             break;
                         case (3):
-                            try {
-                                byte[] bytes = currentFile.readAt(0, 32);
-                                if (bytes == null) break;
-                                for (byte b : bytes) {
-                                    System.out.printf("%02x ", b);
-                                }
-                                System.out.println("");
-                            } catch (IOException e) {
-                                e.printStackTrace();
+
+                            byte[] bytes = currentFile.readAt(0, 32);
+                            if (bytes == null) break;
+                            System.out.print("In hex: ");
+                            for (byte b : bytes) {
+                                System.out.printf("%02x ", b);
                             }
+                            System.out.println("");
+
+                            System.out.print("In ASCII: ");
+                            for (byte b : bytes) {
+                                System.out.print(b + " ");
+                            }
+                            System.out.println("");
                             break;
                         case (4):
+                            int version = -1;
+                            while (version < 0 || version > 3) {
+                                System.out.println("1. Keep current version");
+                                System.out.println("2. Restore last version");
+                                System.out.println("3. Restore oldest version");
+                                version = Integer.parseInt(sc.nextLine());
+                            }
+                            if (version == 0) {
+                                break;
+                            }
+                            switch (version) {
+                                default:
+                                    break;
+                                case (1):
+                                    currentFile.restoreFromVersion("CURR");
+                                    break;
+                                case (2):
+                                    currentFile.restoreFromVersion("LAST");
+                                    break;
+                                case (3):
+                                    currentFile.restoreFromVersion("OLDEST");
+                                    break;
+                            }
                             break;
                         case (5):
                             currentFile.close();
@@ -141,8 +167,8 @@ public class Main {
                 }
             }
 
-            System.out.print("Press Enter/Return to continue...");
-            String input = sc.nextLine();
+//            System.out.print("Press Enter/Return to continue...");
+//            String input = sc.nextLine();
             System.out.println("===================================================\n");
         }
     }
