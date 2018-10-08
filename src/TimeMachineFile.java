@@ -9,6 +9,13 @@ public class TimeMachineFile extends File {
     private FileInputStream fis = null;
     private FileOutputStream fos = null;
 
+    private int version = 0;
+
+    /**
+     * Constructor for File related to Time Machine System.
+     *
+     * @param pathname
+     */
     public TimeMachineFile(String pathname) {
         super(pathname);
     }
@@ -87,6 +94,7 @@ public class TimeMachineFile extends File {
 
     /**
      * Command to store Chunks from user's input and generate corresponding Metadata.
+     * FIXME: if called from Parsers, may create infinite cycle
      *
      * @param userInputBytes - argument to help interaction with the program
      * @return
@@ -101,6 +109,8 @@ public class TimeMachineFile extends File {
         }
 
         // also stores corresponding Metadata to metadata path
+        MetadataParser metadataParser = new MetadataParser();
+        metadataParser.writeMetadataToFile(this.getName());
     }
 
 
@@ -116,4 +126,10 @@ public class TimeMachineFile extends File {
             e.printStackTrace();
         }
     }
+
+
+    /**********
+     * HELPER *
+     **********/
+
 }

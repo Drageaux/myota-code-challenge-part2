@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TimeMachineSystem tms = new TimeMachineSystem(new ChunkParser(), new MetadataParser());
+        TimeMachineSystem tms = new TimeMachineSystem(new MetadataParser());
         TimeMachineFile currentFile = null;
         String readWriteMode = "";
         boolean exit = false;
@@ -37,7 +37,7 @@ public class Main {
                             System.out.println("0. Exit program");
                         } else if (readWriteMode == "write") {
                             System.out.println(", writable mode)");
-                            System.out.println("2. Write file");
+                            System.out.println("2. Write file (flush chunks and metadata if written successful)");
                             System.out.println("3. Read all file data (offset 0, length 32");
                             System.out.println("4. Restore file version");
                             System.out.println("5. Close file");
@@ -105,15 +105,14 @@ public class Main {
                                 byte[] bytes = output.getBytes();
                                 try {
                                     int lengthDataWritten = currentFile.writeAt(bytes, 0);
-                                    // only store chunks if write process successful
+                                    // only store chunks and generate metadata if write process successful
                                     if (lengthDataWritten != -1) {
-                                        tms.storeChunks(bytes);
+                                        currentFile.flush(bytes);
                                         System.out.println(lengthDataWritten + " bytes written");
                                     }
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-
                             } else {
                                 System.out.println("ERROR: You don't have write access");
                             }
