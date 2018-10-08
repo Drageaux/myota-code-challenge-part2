@@ -19,6 +19,9 @@ public class ChunkParser {
         }
     }
 
+    /**********
+     * HELPER *
+     **********/
     public static byte[] byteListToByteArray(List<Byte> list) {
         byte[] byteArray = new byte[list.size()];
         for (int i = 0; i < list.size(); i++) byteArray[i] = list.get(i);
@@ -62,13 +65,44 @@ public class ChunkParser {
     }
 
 
+
+
+    /**
+     * Make Collection of Chunks, then for each Chunk in a Collection,
+     * write a chunk file into the /chunk folder.
+     * NOTE: not checking duplicates
+     * TODO: retrieve existingChunks and check against duplicates
+     *
+     * @param userInputBytes
+     * @throws IOException
+     */
+    public void writeChunksToFiles(byte[] userInputBytes) throws IOException {
+        HashMap<String, Chunk> newChunksMap = this.createNewChunksMap(userInputBytes);
+        Collection<Chunk> newChunks = newChunksMap.values();
+        FileOutputStream fos = null;
+
+        for (Chunk c : newChunks) {
+            try {
+                File chunkFile = new File(c.path);
+                fos = new FileOutputStream(chunkFile);
+                fos.write(c.content);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("ERROR: Failed to write to file");
+            } finally {
+                fos.close();
+            }
+        }
+    }
+
+
     /**
      * Parse a byte array and populate a HashMap with new Chunks only.
      *
      * @param data - an array of bytes, likely from a plain text file
      * @return
      */
-    public HashMap<String, Chunk> createChunks(byte[] data) {
+    private HashMap<String, Chunk> createNewChunksMap(byte[] data) {
         HashMap<String, Chunk> map = new HashMap<>();
 
         ArrayList<Byte> currBytes = new ArrayList<>();
@@ -106,31 +140,6 @@ public class ChunkParser {
         if (!this.existingChunks.containsKey(new String(byteArr))) {
             Chunk newChunk = new Chunk(byteArr);
             newMap.put(new String(byteArr), newChunk);
-        }
-    }
-
-    /**
-     * For each Chunk in the Collection, write a chunk file into the /chunk folder
-     * NOTE: not checking duplicates
-     * TODO: retrieve existingChunks and check against duplicates
-     *
-     * @param chunks
-     * @throws IOException
-     */
-    public void writeChunks(Collection<Chunk> chunks) throws IOException {
-        FileOutputStream fos = null;
-
-        for (Chunk c : chunks) {
-            try {
-                File chunkFile = new File(c.path);
-                fos = new FileOutputStream(chunkFile);
-                fos.write(c.content);
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.out.println("ERROR: Failed to write to file");
-            } finally {
-                fos.close();
-            }
         }
     }
 

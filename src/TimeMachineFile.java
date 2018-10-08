@@ -1,5 +1,4 @@
 import java.io.*;
-import java.nio.file.Files;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -87,26 +86,26 @@ public class TimeMachineFile extends File {
 
 
     /**
-     * Command to store Chunks from user's input
+     * Command to store Chunks from user's input and generate corresponding Metadata.
      *
-     * @param userInputBytes
+     * @param userInputBytes - argument to help interaction with the program
      * @return
      */
     public void flush(byte[] userInputBytes) {
+        // flushes data in input as Chunks to chunk path
         ChunkParser chunkParser = new ChunkParser();
-        HashMap<String, Chunk> newChunksMap = chunkParser.createChunks(userInputBytes);
-
-        Collection<Chunk> newChunks = newChunksMap.values();
         try {
-            chunkParser.writeChunks(newChunks);
+            chunkParser.writeChunksToFiles(userInputBytes);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // also stores corresponding Metadata to metadata path
     }
 
 
     /**
-     * Close all streams
+     * Close all streams.
      */
     public void close() {
         try {
