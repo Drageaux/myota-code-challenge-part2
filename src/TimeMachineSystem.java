@@ -17,7 +17,7 @@ public class TimeMachineSystem {
     public TimeMachineFile open(String name, String mode) {
         TimeMachineFile file = null;
 
-        file = new TimeMachineFile("./file/" + name);
+        file = new TimeMachineFile(name);
 
         if (mode == "read" && file.exists()) {
             try {
@@ -45,7 +45,14 @@ public class TimeMachineSystem {
 
 
     public boolean storeChunks(byte[] bytes) {
-        HashMap<String, Chunk> newChunks = this.createChunks(bytes);
+        HashMap<String, Chunk> newChunksMap = this.createChunks(bytes);
+
+        Collection<Chunk> newChunks = newChunksMap.values();
+        try {
+            this.writeChunks(newChunks);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return false;
     }
 
@@ -58,7 +65,7 @@ public class TimeMachineSystem {
         for (byte b : data) {
             if (b == this.BOUNDARY_BYTE.byteValue()) { // found border
                 if (currBytes.size() != 0) { // finish chunk and add to currBytes
-                    this.storeNewChunk(currBytes, map);
+                    this.makeNewChunk(currBytes, map);
                     currBytes.clear();
                 }
             }
@@ -68,7 +75,7 @@ public class TimeMachineSystem {
         }
         if (currBytes.size() != 0) { // read and store the rest until end of array
             System.out.println("End of file");
-            this.storeNewChunk(currBytes, map);
+            this.makeNewChunk(currBytes, map);
             currBytes.clear();
         }
         System.out.println("Current bytes: " + currBytes);
@@ -76,10 +83,29 @@ public class TimeMachineSystem {
         return map;
     }
 
-    private void storeNewChunk(ArrayList<Byte> bytes, Map<String, Chunk> newMap) {
+
+    private void makeNewChunk(ArrayList<Byte> bytes, Map<String, Chunk> newMap) {
         if (!this.existingChunks.containsKey(bytes)) {
             Chunk newChunk = new Chunk(bytes);
             newMap.put(new String(String.valueOf(bytes)), newChunk);
+        }
+    }
+
+    private void writeChunks(Collection<Chunk> chunks) throws IOException {
+        FileOutputStream fos = null;
+
+        for (Chunk c : chunks) {
+            try {
+                File chunkFile = new File(c.path);
+                fos = new FileOutputStream(chunkFile);
+                System.out.println(c.content);
+                fos.write(c.content);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("ERROR: Failed to write to file");
+            } finally {
+                fos.close();
+            }
         }
     }
 }

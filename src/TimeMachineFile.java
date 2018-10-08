@@ -8,7 +8,7 @@ public class TimeMachineFile extends File {
     private FileOutputStream fos = null;
 
     public TimeMachineFile(String pathname) {
-        super(pathname);
+        super("./file/" + pathname);
     }
 
 
@@ -33,7 +33,7 @@ public class TimeMachineFile extends File {
             return n;
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("ERROR: Failed to write to write");
+            System.out.println("ERROR: Failed to write to file");
             return -1;
         } finally {
             fos.close();
