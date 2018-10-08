@@ -3,6 +3,7 @@ import java.nio.file.Files;
 
 public class TimeMachineFile extends File {
 
+    private final static Byte BOUNDARY_BYTE = new Byte("48");
     private final static int MAX_FILE_SIZE = 32;
     private FileInputStream fis = null;
     private FileOutputStream fos = null;
