@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TimeMachineSystem tms = new TimeMachineSystem();
+        TimeMachineSystem tms = new TimeMachineSystem(new ChunkParser(), new MetadataParser());
         TimeMachineFile currentFile = null;
         String readWriteMode = "";
         boolean exit = false;

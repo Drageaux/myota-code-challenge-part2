@@ -8,7 +8,7 @@ public class TimeMachineFile extends File {
     private FileOutputStream fos = null;
 
     public TimeMachineFile(String pathname) {
-        super("./file/" + pathname);
+        super(pathname);
     }
 
 
